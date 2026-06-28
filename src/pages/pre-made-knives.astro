@@ -1,13 +1,15 @@
 ---
 import Layout from "../layouts/Layout.astro"
 import '../css/pre-made-knives.css'
+
+const contactUrl = `${import.meta.env.BASE_URL}contact`
 ---
 <Layout activeMenu={"pre-made-knives"}>
     <div class="contentContainer">
         <h1>Pre Made Knives</h1>
         <!--<h2>Didn't find what you're looking for?</h2>-->
         <p>
-            I am always accepting custom orders. For your own custom knife please <a class="contactLink" href="/contact">contact me</a>.
+            I am always accepting custom orders. For your own custom knife please <a class="contactLink" href={contactUrl}>contact me</a>.
         </p>
     </div>
 </Layout>

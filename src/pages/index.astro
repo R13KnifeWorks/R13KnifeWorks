@@ -45,11 +45,12 @@ for (const imgName of imgNameToImageImport.keys()) {
     }
 }
 
+const contactUrl = `${import.meta.env.BASE_URL}contact`
 ---
 
 <Layout activeMenu={"gallery"}>
     <p class="homepageIntro">Founded in 2017, R13 Knifeworks crafts custom knives made to order.</p>
-    <p class="callToAction">Below are just a few of my past works. I sell both pre-made and custom design knives. When you're ready to order, <a class="callToAction-contact" href="/contact">send me an email</a> and we can begin crafting your custom knife!</p>
+    <p class="callToAction">Below are just a few of my past works. I sell both pre-made and custom design knives. When you're ready to order, <a class="callToAction-contact" href={contactUrl}>send me an email</a> and we can begin crafting your custom knife!</p>
     <div class="galleryContentContainer">
         <h2 class="homePageTitle">Past Works</h2>
         <div class="imageCardContainer">
