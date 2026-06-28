@@ -1,0 +1,21 @@
+---
+import { Image } from "astro:assets"
+import logo from '../assets/updated-logo.png'
+
+const { activeMenu } = Astro.props
+---
+
+<div class="header">
+    <div class="menu">
+        <a class="menu-logoAndTitle" href="/">
+            <Image src={logo} class="logoAndTitle-logo" alt={"R13 Knifeworks logo"}/>
+            <h2 class="logoAndTitle-title">R13 Knifeworks</h2>
+        </a>
+        <ul class="menuButtons" active-menu={activeMenu}>
+            <li class="menuButtons-button--gallery"><a href="/">Gallery</a></li>
+            <li class="menuButtons-button--about"><a href="/about">About</a></li>
+            <li class="menuButtons-button--preMadeKnives"><a href="/pre-made-knives">Pre Made Knives</a></li>
+            <li class="menuButtons-button--contact"><a href="/contact">Contact</a></li>
+        </ul>
+    </div>
+</div>

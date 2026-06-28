@@ -1,0 +1,56 @@
+name: r13-knifeworks
+runtime: yaml
+description: r13-knifeworks-website
+
+variables:
+  location: us-west1
+  project: r13-knifeworks
+  websitePolicyData:
+    fn::invoke:
+      function: gcp:organizations:getIAMPolicy
+      arguments:
+        bindings:
+          - role: roles/run.invoker
+            members:
+              - allUsers
+
+resources:
+  imageRepo:
+    type: gcp:artifactregistry:Repository
+    properties:
+      description: docker repo for r13knifeworks website
+      format: DOCKER
+      location: ${location}
+      repositoryId: r13knifeworks-docker-repo
+      cleanupPolicies:
+        - action: KEEP
+          mostRecentVersions:
+            keepCount: 1
+          id: keep-most-recent-version-only
+
+  r13knifeworkswebsite:
+    type: gcp:cloudrunv2:Service
+    properties:
+      ingress: INGRESS_TRAFFIC_ALL
+      location: ${location}
+      template:
+        containers:
+          - image: us-west1-docker.pkg.dev/r13-knifeworks/r13knifeworks-docker-repo/r13knifeworks-website:r13knifeworks
+            resources:
+              limits:
+                cpu: '1'
+                memory: 128Mi
+              cpuIdle: true
+        maxInstanceRequestConcurrency: 1000
+        scaling:
+          minInstanceCount: 0
+          maxInstanceCount: 1
+
+  websiteAccessPolicy:
+    type: gcp:cloudrunv2:ServiceIamPolicy
+    properties:
+      location: ${location}
+      project: ${project}
+      name: ${r13knifeworkswebsite.name}
+      policyData: ${websitePolicyData.policyData}
+

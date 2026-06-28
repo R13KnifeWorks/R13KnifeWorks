@@ -1,0 +1,30 @@
+---
+import Header from "../components/Header.astro"
+import Footer from "../components/Footer.astro"
+import '../css/shared.css'
+
+const { activeMenu } = Astro.props
+---
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>R13 Knifeworks</title>
+	</head>
+    <body>
+        <Header activeMenu={activeMenu}/>
+            <slot />
+        <Footer/>
+	</body>
+</html>
+
+<style>
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+	}
+</style>

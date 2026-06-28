@@ -1,0 +1,10 @@
+---
+import { Image } from "astro:assets"
+
+const {img, imgCaption} = Astro.props
+---
+<div class="imageCard">
+    <Image class="imageCard-image" src={img} alt={"a knife made by R13 Knifeworks"}/>
+    <p class="imageCard-text">{imgCaption}</p>
+    <hr class="imageCard-separator">
+</div>

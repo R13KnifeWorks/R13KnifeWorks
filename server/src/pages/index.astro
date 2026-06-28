@@ -1,0 +1,61 @@
+---
+import GalleryCard from '../components/GalleryCard.astro';
+import Layout from '../layouts/Layout.astro';
+import '../css/gallery.css'
+import data from '../gallery-image-mappings.json' assert { type: 'json' };
+import type { ImageMetadata } from 'astro';
+
+// transform imported data into map 
+type imageMapping = {
+    image_name: string,
+    caption: string
+}
+data as imageMapping[]
+
+const imgMappings = new Map<string,imageMapping>()
+for (const imgObj of data) {
+    if (imgMappings.has(imgObj.image_name)) {
+        throw new Error(`${imgObj.image_name} listed more than once in gallery-image-mappings.json`)
+    }
+    imgMappings.set(imgObj.image_name,imgObj)
+}
+// done transforming
+
+//import images
+const imgNameToImageImport = new Map(Object.entries(import.meta.glob<{default: ImageMetadata}>('../images/gallery/*.{jpeg,jpg,png,gif}')).map(([path,importFunc]) => [path.split('/').pop(),importFunc]));
+
+type imageImportAndCaption = {
+    importFunc: () => Promise<{default: ImageMetadata}>,
+    caption: string
+}
+const imageImportsAndCaptions = new Map<string,imageImportAndCaption>()
+
+//pull the img names out in the order they're specified in the gallery-image-mappings.json file
+for (const imgName of imgMappings.keys()) {
+    if (!imgNameToImageImport.has(imgName)) {
+        throw new Error(`${imgName} found in gallery-image-mappings.json but not in the images folder`)
+    }
+    //we've verified imgNameToImageImportcontains the imgName key so we can use ! to shut the type checker up
+    imageImportsAndCaptions.set(imgName,{importFunc: imgNameToImageImport.get(imgName)!,caption: imgMappings.get(imgName)?.caption || ""})
+}
+
+for (const imgName of imgNameToImageImport.keys()) {
+    if (!imgMappings.has(imgName!)) {
+        throw new Error(`${imgName} found in images folder but not in gallery-image-mappings.json`)
+    }
+}
+
+---
+
+<Layout activeMenu={"gallery"}>
+    <p class="homepageIntro">Founded in 2017, R13 Knifeworks crafts custom knives made to order.</p>
+    <p class="callToAction">Below are just a few of my past works. I sell both pre-made and custom design knives. When you're ready to order, <a class="callToAction-contact" href="/contact">send me an email</a> and we can begin crafting your custom knife!</p>
+    <div class="galleryContentContainer">
+        <h2 class="homePageTitle">Past Works</h2>
+        <div class="imageCardContainer">
+            {imageImportsAndCaptions.values().map((importAndCaption) => (
+                <GalleryCard img={importAndCaption.importFunc()} imgCaption={importAndCaption.caption}/>
+            ))}
+        </div>
+    </div>
+</Layout>
